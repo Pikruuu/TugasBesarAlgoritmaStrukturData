@@ -1,12 +1,11 @@
 #include <iostream>
-#include <string>
 #include "penulisList.h"
 #include "jurnalList.h"
 #include "relasiList.h"
 
 using namespace std;
 
-int main(){
+int main() {
     ListPenulis LP;
     ListJurnal LJ;
     List_relasi LR;
@@ -15,92 +14,196 @@ int main(){
     createListJurnal(LJ);
     createListRelasi(LR);
 
-    ////////////////////////////////////////////PENULIS TEST//////////////////////////////////////////
-    cout << endl << "////////TEST PENULIS////////" << endl;
-    elmPenulis* penulis;
-    penulis = alokasiPenulis(101, "Yohan", "Mahasiswa");
-    insertPenulis(LP, penulis);
-    penulis = alokasiPenulis(102, "Budi", "Dosen");
-    insertPenulis(LP, penulis);
+    int menu = -1;
+    while (menu != 0){
+        cout << "\n=== MENU UTAMA ===\n";
+        cout << "1. Insert element parent (Penulis)\n";
+        cout << "2. Insert element child (Jurnal)\n";
+        cout << "3. Insert element relation\n";
+        cout << "4. Delete element parent\n";
+        cout << "5. Delete element child\n";
+        cout << "6. Delete element relation\n";
+        cout << "7. Find element parent\n";
+        cout << "8. Find element child\n";
+        cout << "9. Cek apakah parent dan child memiliki relasi\n";
+        cout << "10. Show all parent\n";
+        cout << "11. Show all child\n";
+        cout << "12. Show data child dari parent tertentu\n";
+        cout << "13. Show data parent dari child tertentu\n";
+        cout << "14. Show setiap parent beserta childnya\n";
+        cout << "15. Show setiap child beserta parentnya\n";
+        cout << "16. Hitung jumlah child dari parent tertentu\n";
+        cout << "0. Exit\n";
+        cout << "Pilih menu: ";
+        cin >> menu;
 
-    // Print List Penulis 
-    cout << "List Penulis:" << endl;
-    elmPenulis* P = LP.first;
-    while (P != NULL){
-        cout << "ID Penulis: " << P->info.idPenulis << ", Nama: " << P->info.namaPenulis << ", Status: " << P->info.status << endl;
-        P = P->next;
+        cout << endl;
+
+        if (menu == 1) {
+            int id;
+            string nama, status;
+            cout << "ID Penulis: ";
+            cin >> id;
+            cout << "Nama Penulis: ";
+            cin >> nama;
+            cout << "Status: ";
+            cin >> status;
+            insertPenulis(LP, alokasiPenulis(id, nama, status));
+            cout << "Penulis ditambahkan.\n";
+        }
+
+        else if (menu == 2) {
+            infotypeJurnal J;
+            cout << "ID Jurnal: ";
+            cin >> J.idJurnal;
+            cout << "Judul Jurnal: ";
+            cin >> J.judulJurnal;
+            cout << "Akreditasi Jurnal (1 = ya, 0 = tidak): ";
+            cin >> J.akreditasiJurnal;
+            insertJurnal(LJ, createElment(J));
+            cout << "Jurnal ditambahkan.\n";
+        }
+
+        else if (menu == 3) {
+            int idP;
+            string idJ;
+            cout << "ID Penulis: ";
+            cin >> idP;
+            cout << "ID Jurnal: ";
+            cin >> idJ;
+
+            addressPenulis P = findPenulis(LP, idP);
+            addressJurnal J = findJurnal(LJ, idJ);
+
+            if (P != NULL && J != NULL) {
+                insertRelasi(LR, alokasiRelasi(P, J));
+                cout << "Relasi berhasil dibuat.\n";
+            } else {
+                cout << "Penulis atau jurnal tidak ditemukan.\n";
+            }
+        }
+
+        else if (menu == 4) {
+            int id;
+            cout << "ID Penulis yang ingin dihapus: ";
+            cin >> id;
+            deletePenulis(LP, id);
+        }
+
+        else if (menu == 5) {
+            string id;
+            cout << "ID Jurnal yang ingin dihapus: ";
+            cin >> id;
+            deleteJurnal(LJ, id);
+        }
+
+        else if (menu == 6) {
+            int idP;
+            string idJ;
+            cout << "ID Penulis: ";
+            cin >> idP;
+            cout << "ID Jurnal: ";
+            cin >> idJ;
+
+            addressPenulis P = findPenulis(LP, idP);
+            addressJurnal J = findJurnal(LJ, idJ);
+
+            if (P != NULL && J != NULL) {
+                address_relasi R = findRelasi(LR, *P, J);
+                if (R != NULL) {
+                    deleteRelasi(LR, R);
+                    cout << "Relasi dihapus.\n";
+                } else {
+                    cout << "Relasi tidak ditemukan.\n";
+                }
+            }
+        }
+
+        else if (menu == 7) {
+            int id;
+            cout << "ID Penulis dicari: ";
+            cin >> id;
+            addressPenulis P = findPenulis(LP, id);
+            if (P != NULL)
+                cout << "Ditemukan: " << P->info.namaPenulis << endl;
+            else
+                cout << "Penulis tidak ditemukan.\n";
+        }
+
+        else if (menu == 8) {
+            string id;
+            cout << "ID Jurnal dicari: ";
+            cin >> id;
+            addressJurnal J = findJurnal(LJ, id);
+            if (J != NULL)
+                cout << "Ditemukan: " << J->info.judulJurnal << endl;
+            else
+                cout << "Jurnal tidak ditemukan.\n";
+        }
+
+        else if (menu == 9) {
+            int idP;
+            string idJ;
+            cout << "ID Penulis: ";
+            cin >> idP;
+            cout << "ID Jurnal: ";
+            cin >> idJ;
+
+            addressPenulis P = findPenulis(LP, idP);
+            addressJurnal J = findJurnal(LJ, idJ);
+
+            if (P != NULL && J != NULL) {
+                if (findRelasi(LR, *P, J) != NULL)
+                    cout << "ADA relasi.\n";
+                else
+                    cout << "TIDAK ADA relasi.\n";
+            }
+        }
+
+        else if (menu == 10) {
+            printListPenulis(LP);
+        }
+
+        else if (menu == 11) {
+            printListJurnal(LJ);
+        }
+
+        else if (menu == 12) {
+            int id;
+            cout << "ID Penulis: ";
+            cin >> id;
+            addressPenulis P = findPenulis(LP, id);
+            showChildOfParent(LR, P);
+        }
+
+        else if (menu == 13) {
+            string id;
+            cout << "ID Jurnal: ";
+            cin >> id;
+            addressJurnal J = findJurnal(LJ, id);
+            showParentOfChild(LR, J);
+        }
+
+        else if (menu == 14) {
+            showAllParentWithChild(LP, LR);
+        }
+
+        else if (menu == 15) {
+            showAllChildWithParent(LJ, LR);
+        }
+
+        else if (menu == 16) {
+            int id;
+            cout << "ID Penulis: ";
+            cin >> id;
+            addressPenulis P = findPenulis(LP, id);
+            cout << "Jumlah jurnal: " << countChildOfParent(LR, P) << endl;
+        } else{
+            cout << "ERROR 404 ### Input Salah ### ERROR 404" << endl << endl;
+        }
+
     }
-    cout << endl;
 
-    //print find penulis
-    int searchId = 102;
-    elmPenulis* foundPenulis = findPenulis(LP, searchId);
-    if(foundPenulis != NULL){ 
-        cout << "Found Penulis with ID " << searchId << ": " << foundPenulis->info.namaPenulis << endl;
-    } else {
-        cout << "Penulis with ID " << searchId << " not found." << endl;
-    }
-    cout << endl;
-
-    //delete penulis
-    deletePenulis(LP, 101); 
-    cout << "List Penulis after deletion of ID 101:" << endl;
-
-    // Print List Penulis after deletion
-    P = LP.first;
-    while (P != NULL){
-        cout << "ID Penulis: " << P->info.idPenulis << ", Nama: " << P->info.namaPenulis << ", Status: " << P->info.status << endl;
-        P = P->next;
-    }
-    cout << endl;
-
-    ////////////////////////////////////////////JURNAL TEST//////////////////////////////////////////
-    cout << endl << "////////TEST JURNAL////////" << endl;
-    infotypeJurnal jurnal;
-    jurnal.idJurnal = "J001";
-    jurnal.judulJurnal = "Algoritma_dan_Struktur_Data";
-    jurnal.akreditasiJurnal = true;
-    addressJurnal P1 = createElment(jurnal);
-    insertJurnal(LJ, P1);
-
-    jurnal.idJurnal = "J002";
-    jurnal.judulJurnal = "Pemrograman_Lanjut";
-    jurnal.akreditasiJurnal = false;
-    addressJurnal P2 = createElment(jurnal);
-    insertJurnal(LJ, P2);
-
-    jurnal.idJurnal = "J003";
-    jurnal.judulJurnal = "Basis_Data";
-    jurnal.akreditasiJurnal = true;
-    addressJurnal P3 = createElment(jurnal);
-    insertJurnal(LJ, P3);
-
-    printListJurnal(LJ);
-
-    deleteJurnal(LJ, "J002");
-    cout << "List Jurnal after deletion of J002:" << endl;
-
-    printListJurnal(LJ);
-
-    //print find jurnal
-    cout << "Find Jurnal with ID J003:";
-    addressJurnal foundJurnal = findJurnal(LJ, "J003");
-    if(foundJurnal != NULL){
-        cout << "Judul Jurnal: " << foundJurnal->info.judulJurnal << endl;
-    } else {
-        cout << "Jurnal not found." << endl;
-    }
-
-    ////////////////////////////////////////////RELASI TEST////////////////////////////////////////////
-    P = findPenulis(LP, 101); // Yohan
-    addressJurnal J = findJurnal(LJ, "J001");
-    address_relasi R1 = alokasiRelasi(P, J);
-    insertRelasi(LR, R1);
-    P = findPenulis(LP, 102);
-    J = findJurnal(LJ, "J003");
-    address_relasi R2 = alokasiRelasi(P, J);
-    insertRelasi(LR, R2);
-    
+    cout << "Program selesai.\n";
     return 0;
 }
-

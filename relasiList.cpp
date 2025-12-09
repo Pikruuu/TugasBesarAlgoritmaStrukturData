@@ -56,3 +56,125 @@ void deleteRelasi(List_relasi &L, address_relasi R) {
         }
     }
 }
+
+void showChildOfParent(List_relasi LR, addressPenulis P) {
+    if (P == NULL) {
+        cout << "Parent tidak ditemukan." << endl;
+        return;
+    }
+
+    cout << "Jurnal milik Penulis: " << P->info.namaPenulis << endl;
+
+    address_relasi R = LR.first;
+    bool found = false;
+
+    while (R != NULL) {
+        if (R->parent == P) {
+            cout << "- " << R->child->info.judulJurnal << endl;
+            found = true;
+        }
+        R = R->next;
+    }
+
+    if (!found) {
+        cout << "(Tidak ada jurnal yang berelasi dengan penulis ini)" << endl;
+    }
+}
+
+void showParentOfChild(List_relasi LR, addressJurnal C) {
+    if (C == NULL) {
+        cout << "Child tidak ditemukan." << endl;
+        return;
+    }
+
+    cout << "Penulis dari Jurnal: " << C->info.judulJurnal << endl;
+
+    address_relasi R = LR.first;
+    bool found = false;
+
+    while (R != NULL) {
+        if (R->child == C) {
+            cout << "- " << R->parent->info.namaPenulis << endl;
+            found = true;
+        }
+        R = R->next;
+    }
+
+    if (!found) {
+        cout << "(Tidak ada penulis yang berelasi dengan jurnal ini)" << endl;
+    }
+}
+
+void showAllParentWithChild(ListPenulis LP, List_relasi LR) {
+    addressPenulis P = LP.first;
+
+    if (P == NULL) {
+        cout << "List penulis kosong." << endl;
+        return;
+    }
+
+    while (P != NULL) {
+        cout << "\nPenulis: " << P->info.namaPenulis << endl;
+
+        address_relasi R = LR.first;
+        bool found = false;
+
+        while (R != NULL) {
+            if (R->parent == P) {
+                cout << "   - " << R->child->info.judulJurnal << endl;
+                found = true;
+            }
+            R = R->next;
+        }
+
+        if (!found) {
+            cout << "   (Tidak ada jurnal terkait)" << endl;
+        }
+
+        P = P->next;
+    }
+}
+
+void showAllChildWithParent(ListJurnal LJ, List_relasi LR) {
+    addressJurnal C = LJ.first;
+
+    if (C == NULL) {
+        cout << "List jurnal kosong." << endl;
+        return;
+    }
+
+    while (C != NULL) {
+        cout << "\nJurnal: " << C->info.judulJurnal << endl;
+
+        address_relasi R = LR.first;
+        bool found = false;
+
+        while (R != NULL) {
+            if (R->child == C) {
+                cout << "   - " << R->parent->info.namaPenulis << endl;
+                found = true;
+            }
+            R = R->next;
+        }
+
+        if (!found) {
+            cout << "   (Tidak ada penulis terkait)" << endl;
+        }
+
+        C = C->next;
+    }
+}
+
+int countChildOfParent(List_relasi LR, addressPenulis P) {
+    int count = 0;
+    address_relasi R = LR.first;
+
+    while (R != NULL) {
+        if (R->parent == P) {
+            count++;
+        }
+        R = R->next;
+    }
+
+    return count;
+}

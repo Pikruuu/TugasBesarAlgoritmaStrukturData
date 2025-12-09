@@ -27,5 +27,6 @@ elmPenulis* alokasiPenulis(int id, string nama, string status);
 void insertPenulis(ListPenulis &L, elmPenulis* P);
 elmPenulis* findPenulis(ListPenulis L, int id);
 void deletePenulis(ListPenulis &L, int id);
+void printListPenulis(ListPenulis L);
 
 #endif
